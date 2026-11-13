@@ -1,17 +1,18 @@
-# uni_marketplace
+# Uni-Marketplace 
 
-A new Flutter project.
+Application mobile de marketplace dédiée aux étudiants pour l'achat, la vente et l'échange d'articles universitaires.
 
-## Getting Started
+##  Technologies utilisées
+* **Frontend :** Flutter (Dart)
+* **Gestion de version :** Git & GitHub
 
-This project is a starting point for a Flutter application.
+##Membres de l'équipe
+* **Yassmina**
+* **Rihab**
+* **Aya**
+* **Douae**
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+##  Instructions d'installation
+1. Cloner le dépôt : `git clone https://github.com/yassminahamdaoui24-cmd/uni_marketplace.git`
+2. Installer les dépendances : `flutter pub get`
+3. Lancer l'application : `flutter run`
