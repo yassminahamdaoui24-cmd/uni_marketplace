@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'app_theme.dart';
 
 void main() {
   runApp(const UniMarketplaceApp());
@@ -12,7 +13,7 @@ class UniMarketplaceApp extends StatelessWidget {
     return MaterialApp(
       title: 'Uni Marketplace',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.brown, useMaterial3: true),
+      theme:AppTheme.lightTheme,
       initialRoute: '/bienvenue',
       routes: {
         '/bienvenue': (context) => const BienvenueScreen(),
