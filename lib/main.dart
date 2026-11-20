@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+
 import 'app_theme.dart';
+import 'presentation/pages/login_page.dart';
+import 'presentation/pages/register_page.dart';
+import 'presentation/pages/forgot_password_page.dart';
 
 void main() {
   runApp(const UniMarketplaceApp());
@@ -13,13 +17,13 @@ class UniMarketplaceApp extends StatelessWidget {
     return MaterialApp(
       title: 'Uni Marketplace',
       debugShowCheckedModeBanner: false,
-      theme:AppTheme.lightTheme,
+      theme: AppTheme.lightTheme,
       initialRoute: '/bienvenue',
       routes: {
         '/bienvenue': (context) => const BienvenueScreen(),
-        '/connexion': (context) => const ConnexionScreen(),
-        '/inscription': (context) => const InscriptionScreen(),
-
+        '/connexion': (context) => const LoginPage(),
+        '/inscription': (context) => const RegisterPage(),
+        '/forgot-password': (context) => const ForgotPasswordPage(),
         '/catalogue': (context) => const CatalogueScreen(),
         '/detail': (context) => const DetailAnnonceScreen(),
         '/publication': (context) => const PublicationScreen(),
@@ -53,60 +57,6 @@ class BienvenueScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () => Navigator.pushNamed(context, '/inscription'),
               child: const Text('Aller vers Inscription'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ConnexionScreen extends StatelessWidget {
-  const ConnexionScreen({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Connexion')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Écran Connexion (Public)',
-              style: TextStyle(fontSize: 20),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () =>
-                  Navigator.pushReplacementNamed(context, '/catalogue'),
-              child: const Text('Se connecter (Démo -> Catalogue)'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class InscriptionScreen extends StatelessWidget {
-  const InscriptionScreen({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Inscription')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Écran Inscription (Public)',
-              style: TextStyle(fontSize: 20),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () =>
-                  Navigator.pushReplacementNamed(context, '/catalogue'),
-              child: const Text("S'inscrire (Démo -> Catalogue)"),
             ),
           ],
         ),
