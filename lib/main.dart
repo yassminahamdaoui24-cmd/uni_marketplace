@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uni_marketplace/presentation/pages/welcome_page.dart';
 
 import 'app_theme.dart';
 import 'presentation/pages/login_page.dart';
@@ -20,7 +21,7 @@ class UniMarketplaceApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       initialRoute: '/bienvenue',
       routes: {
-        '/bienvenue': (context) => const BienvenueScreen(),
+        '/bienvenue': (context) => const WelcomePage(),
         '/connexion': (context) => const LoginPage(),
         '/inscription': (context) => const RegisterPage(),
         '/forgot-password': (context) => const ForgotPasswordPage(),
