@@ -7,6 +7,7 @@ class AnnonceModel {
   final String imageUrl;
   final String vendeurId;
   final DateTime datePublication;
+  final String statut;
 
   AnnonceModel({
     required this.id,
@@ -17,6 +18,7 @@ class AnnonceModel {
     required this.imageUrl,
     required this.vendeurId,
     required this.datePublication,
+    this.statut = 'Disponible',
   });
 
   Map<String, dynamic> toMap() {
@@ -29,6 +31,7 @@ class AnnonceModel {
       'imageUrl': imageUrl,
       'vendeurId': vendeurId,
       'datePublication': datePublication.toIso8601String(),
+      'statut': statut,
     };
   }
 
@@ -43,6 +46,7 @@ class AnnonceModel {
       vendeurId: map['vendeurId'] ?? '',
       datePublication:
           DateTime.tryParse(map['datePublication'] ?? '') ?? DateTime.now(),
+      statut: map['statut'] ?? 'Disponible',
     );
   }
 }
