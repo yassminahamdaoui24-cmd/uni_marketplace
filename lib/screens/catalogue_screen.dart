@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widgets/annonce_card.dart';
+import '../presentation/widgets/annonce_card.dart';
 import '../services/mock_annonces.dart';
 import 'detail_annonce_screen.dart';
 class CatalogueScreen extends StatelessWidget {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'app_theme.dart';
+import 'core/theme/app_theme.dart';
 
 import 'screens/bienvenue_screen.dart';
 import 'screens/connexion_screen.dart';

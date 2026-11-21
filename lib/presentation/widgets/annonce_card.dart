@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/annonce_model.dart';
+import '../../models/annonce_model.dart';
 
 class AnnonceCard extends StatelessWidget {
   final AnnonceModel annonce;
