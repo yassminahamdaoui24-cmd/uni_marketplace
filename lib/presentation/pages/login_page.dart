@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../app_theme.dart';
 import '../../widgets/custom_button.dart';
 import '../widgets/auth_text_field.dart';
+import '../../services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -59,38 +60,30 @@ class _LoginPageState extends State<LoginPage> {
 
     setState(() => _isLoading = true);
 
-    // Simulation d'appel réseau (en attendant Firebase Auth)
-    await Future.delayed(const Duration(seconds: 1));
+    final result = await AuthService.instance.login(
+      email: email,
+      password: password,
+    );
 
     if (!mounted) return;
+    setState(() => _isLoading = false);
 
-    // Cas de test pour vérifier tous les états Figma :
-    if (email == 'offline@ump.ac.ma') {
-      setState(() {
-        _isLoading = false;
-        _isOffline = true;
-      });
+    if (result.isOffline) {
+      setState(() => _isOffline = true);
       return;
     }
 
-    if (email == 'unverified@ump.ac.ma') {
-      setState(() {
-        _isLoading = false;
-        _emailNotVerified = true;
-      });
+    if (result.isEmailNotVerified) {
+      setState(() => _emailNotVerified = true);
       return;
     }
 
-    if (password == '1234') {
-      setState(() {
-        _isLoading = false;
-        _errorMessage = 'E-mail ou mot de passe incorrect.';
-      });
+    if (!result.success) {
+      setState(() => _errorMessage = result.message);
       return;
     }
 
     // Connexion réussie -> Catalogue
-    setState(() => _isLoading = false);
     Navigator.pushReplacementNamed(context, '/catalogue');
   }
 
