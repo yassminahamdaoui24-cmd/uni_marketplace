@@ -4,6 +4,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'app_theme.dart';
 import 'firebase_options.dart';
 
+import 'presentation/pages/welcome_page.dart';
+import 'presentation/pages/login_page.dart';
+import 'presentation/pages/register_page.dart';
+import 'presentation/pages/forgot_password_page.dart';
+
 import 'presentation/pages/bienvenue_screen.dart';
 import 'presentation/pages/connexion_screen.dart';
 import 'presentation/pages/inscription_screen.dart';
@@ -36,9 +41,10 @@ class UniMarketplaceApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       initialRoute: '/bienvenue',
       routes: {
-        '/bienvenue': (context) => const BienvenueScreen(),
-        '/connexion': (context) => const ConnexionScreen(),
-        '/inscription': (context) => const InscriptionScreen(),
+        '/bienvenue': (context) => const WelcomePage(),
+        '/connexion': (context) => const LoginPage(),
+        '/inscription': (context) => const RegisterPage(),
+        '/forgot-password': (context) => const ForgotPasswordPage(),
         '/catalogue': (context) => const CatalogueScreen(),
         '/detail': (context) => const DetailAnnonceScreen(),
         '/publication': (context) => const PublicationScreen(),
