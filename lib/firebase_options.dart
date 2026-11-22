@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -57,6 +54,14 @@ class DefaultFirebaseOptions {
     appId: '1:606236443547:android:b31c73c10f508489e7d73e',
     messagingSenderId: '606236443547',
     projectId: 'uni-marketplace-eb551',
+    storageBucket: 'uni-marketplace-eb551.firebasestorage.app',
+  );
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyAvXrLxdWJ3lD03EN2Q3b3wTjM66pm19IA',
+    appId: '1:606236443547:web:3131bbb903b25bb9e7d73e',
+    messagingSenderId: '606236443547',
+    projectId: 'uni-marketplace-eb551',
+    authDomain: 'uni-marketplace-eb551.firebaseapp.com',
     storageBucket: 'uni-marketplace-eb551.firebasestorage.app',
   );
 }
