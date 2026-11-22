@@ -1,5 +1,6 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'auth_errors.dart';
 
 class AuthResult {
@@ -19,76 +20,82 @@ class AuthResult {
 }
 
 class AuthService {
-  AuthService._();
+  AuthService();
 
-  static final AuthService instance = AuthService._();
+  static final AuthService instance = AuthService();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  bool get isAuthenticated =>
-      _auth.currentUser != null && _auth.currentUser!.emailVerified;
-
-  bool get isEmailVerified =>
-      _auth.currentUser?.emailVerified ?? false;
-
-  String? get currentUserEmail => _auth.currentUser?.email;
-
+  // Vérification du domaine universitaire
   bool _isAllowedEmail(String email) {
     return email.trim().toLowerCase().endsWith('@ump.ac.ma');
   }
 
-  AuthResult _handleError(FirebaseAuthException e) {
-    return AuthResult(
-      success: false,
-      message: AuthErrors.getMessage(e),
-      isOffline: e.code == 'network-request-failed',
-    );
-  }
-
   // Inscription
-  Future<AuthResult> register({
-    required String fullName,
+  Future<UserCredential?> verifierEmail({
+    required String nom,
+    required String prenom,
     required String email,
+    required String telephone,
     required String password,
   }) async {
-    final normalizedEmail = email.trim().toLowerCase();
-
-    if (!_isAllowedEmail(normalizedEmail)) {
-      return const AuthResult(
-        success: false,
-        message: 'Seules les adresses email @ump.ac.ma sont autorisées.',
-      );
+    if (!_isAllowedEmail(email)) {
+      print('Adresse email non autorisée');
+      return null;
     }
 
     try {
+      // 1. Création du compte Firebase Authentication
       final credential = await _auth.createUserWithEmailAndPassword(
-        email: normalizedEmail,
+         email: email.trim().toLowerCase(),
         password: password,
       );
 
       final user = credential.user;
 
       if (user == null) {
-        return const AuthResult(
-          success: false,
-          message: 'Impossible de créer le compte.',
-        );
+        return null;
       }
 
-      await user.updateDisplayName(fullName.trim());
+      // 2. Création du profil dans Firestore
+      try {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .set({
+          'uid': user.uid,
+          'nom': nom.trim(),
+          'prenom': prenom.trim(),
+          'email': email.trim().toLowerCase(),
+          'telephone': telephone.trim(),
+          'role': 'etudiant',
+          'estSuspendu': false,
+          'dateInscription': FieldValue.serverTimestamp(),
+        });
+      } catch (e) {
+        print('Erreur lors de la sauvegarde du profil : $e');
+
+        try {
+          await user.delete();
+        } catch (deleteError) {
+          print('Erreur lors de la suppression du compte : $deleteError');
+        }
+
+        return null;
+      }
+
+      // 3. Envoi de l'email de vérification
       await user.sendEmailVerification();
 
-      return const AuthResult(
-        success: true,
-        message: 'Compte créé ! Vérifiez votre boîte mail universitaire.',
-        isEmailVerified: false,
-      );
+      return credential;
+
     } on FirebaseAuthException catch (e) {
-      return _handleError(e);
+      print(AuthErrors.getMessage(e));
+      return null;
     }
   }
 
-  // Connexion
+  // Connexion utilisée par le Frontend de Douae
   Future<AuthResult> login({
     required String email,
     required String password,
@@ -111,9 +118,11 @@ class AuthService {
       }
 
       if (!user.emailVerified) {
+        await _auth.signOut();
+
         return const AuthResult(
           success: false,
-          message: 'Votre e-mail n’est pas encore vérifié. Consultez votre boîte mail universitaire.',
+          message: 'Votre e-mail n’est pas encore vérifié.',
           isEmailNotVerified: true,
         );
       }
@@ -123,103 +132,17 @@ class AuthService {
         message: 'Connexion réussie.',
         isEmailVerified: true,
       );
+
     } on FirebaseAuthException catch (e) {
-      return _handleError(e);
-    }
-  }
-
-  // Réinitialisation du mot de passe
-  Future<AuthResult> resetPassword({
-    required String email,
-  }) async {
-    try {
-      await _auth.sendPasswordResetEmail(
-        email: email.trim(),
+      return AuthResult(
+        success: false,
+        message: AuthErrors.getMessage(e),
+        isOffline: e.code == 'network-request-failed',
       );
-
-      return const AuthResult(
-        success: true,
-        message: 'Un lien de réinitialisation a été envoyé.',
-      );
-    } on FirebaseAuthException catch (e) {
-      return _handleError(e);
     }
   }
 
-  // Renvoi de l'e-mail de vérification
-  Future<AuthResult> resendVerificationEmail({
-    required String email,
-  }) async {
-    try {
-      final user = _auth.currentUser;
-
-      if (user == null ||
-          user.email?.toLowerCase() != email.trim().toLowerCase()) {
-        return const AuthResult(
-          success: false,
-          message: 'Veuillez vous reconnecter pour renvoyer l’e-mail de vérification.',
-        );
-      }
-
-      await user.reload();
-
-      final currentUser = _auth.currentUser;
-
-      if (currentUser == null) {
-        return const AuthResult(
-          success: false,
-          message: 'Compte introuvable.',
-        );
-      }
-
-      if (currentUser.emailVerified) {
-        return const AuthResult(
-          success: true,
-          message: 'Votre adresse e-mail est déjà vérifiée.',
-          isEmailVerified: true,
-        );
-      }
-
-      await currentUser.sendEmailVerification();
-
-      return const AuthResult(
-        success: true,
-        message: 'Un nouvel e-mail de vérification a été envoyé.',
-      );
-    } on FirebaseAuthException catch (e) {
-      return _handleError(e);
-    }
-  }
-
-  // Déconnexion
-  Future<void> logout() async {
-    await _auth.signOut();
-  }
-
-  // Méthodes conservées pour compatibilité avec l'ancienne version
-  Future<UserCredential?> verifier_email(
-    String email,
-    String password,
-  ) async {
-    if (!_isAllowedEmail(email)) {
-      print('Adresse email non autorisée');
-      return null;
-    }
-
-    try {
-      final credential = await _auth.createUserWithEmailAndPassword(
-        email: email.trim(),
-        password: password,
-      );
-
-      await credential.user?.sendEmailVerification();
-      return credential;
-    } on FirebaseAuthException catch (e) {
-      print(AuthErrors.getMessage(e));
-      return null;
-    }
-  }
-
+  // Ancienne méthode de connexion conservée
   Future<UserCredential?> signIn(
     String email,
     String password,
@@ -236,14 +159,54 @@ class AuthService {
         return credential;
       }
 
+      await _auth.signOut();
       return null;
+
     } on FirebaseAuthException catch (e) {
       print(AuthErrors.getMessage(e));
       return null;
     }
   }
 
+  // Déconnexion
   Future<void> signOut() async {
-    await logout();
+    await _auth.signOut();
   }
+
+  // Vérification de l'email
+  Future<bool> checkEmailVerified() async {
+    final user = _auth.currentUser;
+
+    if (user == null) {
+      return false;
+    }
+
+    await user.reload();
+
+    return _auth.currentUser?.emailVerified ?? false;
+  }
+
+  // Renvoi de l'email de vérification
+  Future<void> resendVerificationEmail() async {
+    final user = _auth.currentUser;
+
+    if (user == null) {
+      return;
+    }
+
+    await user.reload();
+
+    final currentUser = _auth.currentUser;
+
+    if (currentUser != null && !currentUser.emailVerified) {
+      await currentUser.sendEmailVerification();
+    }
+  }
+
+  // Réinitialisation du mot de passe
+  Future<void> resetPassword(String email) async {
+    await _auth.sendPasswordResetEmail(
+      email: email.trim(),
+    );
+  } 
 }
