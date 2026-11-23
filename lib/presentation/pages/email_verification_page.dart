@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../app_theme.dart';
-
 class EmailVerificationPage extends StatefulWidget {
   final String? email;
 
@@ -12,175 +10,248 @@ class EmailVerificationPage extends StatefulWidget {
 }
 
 class _EmailVerificationPageState extends State<EmailVerificationPage> {
-  bool _isResending = false;
+  static const Color _background = Color(0xFFF5EBDD);
+  static const Color _brown = Color(0xFF824C35);
+  static const Color _darkBrown = Color(0xFF3E2922);
+  static const Color _orange = Color(0xFFC98249);
 
-  Future<void> _resendEmail() async {
-    setState(() => _isResending = true);
+  String get _displayEmail {
+    final arguments = ModalRoute.of(context)?.settings.arguments;
 
-    await Future.delayed(const Duration(seconds: 1));
+    String? routeEmail;
+    if (arguments is String) {
+      routeEmail = arguments;
+    }
 
-    if (!mounted) return;
-    setState(() => _isResending = false);
+    final email = widget.email ?? routeEmail;
+
+    if (email == null || email.trim().isEmpty) {
+      return 'votre adresse e-mail universitaire';
+    }
+
+    return email.trim();
+  }
+
+  void _handleResendEmail() {
+    // FRONTEND UNIQUEMENT
+    // Rihab connectera resendVerificationEmail()
+    // au Backend.
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Un nouvel e-mail de vérification a été envoyé.'),
-        backgroundColor: AppTheme.terracotta,
+        content: Text(
+          "Le renvoi de l'e-mail sera disponible "
+          "apres la connexion au Backend.",
+        ),
+        backgroundColor: _brown,
       ),
+    );
+  }
+
+  void _handleVerified() {
+    // FRONTEND UNIQUEMENT
+    // Rihab connectera checkEmailVerified().
+    // Ici, le bouton retourne uniquement vers Connexion.
+
+    Navigator.pushNamedAndRemoveUntil(context, '/connexion', (route) => false);
+  }
+
+  Widget _buildLogo() {
+    return Column(
+      children: [
+        Image.asset(
+          'assets/images/Frame.png',
+          width: 84,
+          height: 83,
+          fit: BoxFit.contain,
+        ),
+        const SizedBox(height: 2),
+        Image.asset(
+          'assets/images/UniMarket.png',
+          width: 110,
+          fit: BoxFit.contain,
+        ),
+        const SizedBox(height: 2),
+        Image.asset('assets/images/Place.png', width: 46, fit: BoxFit.contain),
+      ],
+    );
+  }
+
+  Widget _buildButton({
+    required String text,
+    required VoidCallback onPressed,
+    bool outlined = false,
+  }) {
+    return SizedBox(
+      width: 240,
+      height: 48,
+      child: outlined
+          ? OutlinedButton(
+              onPressed: onPressed,
+              style: OutlinedButton.styleFrom(
+                foregroundColor: _orange,
+                side: const BorderSide(color: _orange, width: 1.5),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Text(
+                text,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            )
+          : ElevatedButton(
+              onPressed: onPressed,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _orange,
+                foregroundColor: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Text(
+                text,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final routeEmail = ModalRoute.of(context)?.settings.arguments as String?;
-    final displayEmail = widget.email ?? routeEmail ?? 'votre adresse e-mail';
-
     return Scaffold(
-      backgroundColor: AppTheme.beige,
+      backgroundColor: _background,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: _background,
         elevation: 0,
-        iconTheme: const IconThemeData(color: AppTheme.brunFonce),
+        surfaceTintColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: _brown),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-          child: Column(
-            children: [
-              const Spacer(flex: 2),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 400),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  _buildLogo(),
 
-              Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  color: AppTheme.terracotta.withOpacity(0.15),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.mark_email_unread_rounded,
-                  size: 48,
-                  color: AppTheme.terracotta,
-                ),
-              ),
-              const SizedBox(height: 28),
+                  const SizedBox(height: 42),
 
-              const Text(
-                'Vérifiez votre boîte e-mail',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.brunFonce,
-                ),
-              ),
-              const SizedBox(height: 14),
-
-              Text(
-                'Nous avons envoyé un lien de confirmation à :',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 15,
-                  color: AppTheme.brunFonce.withOpacity(0.75),
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                displayEmail,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.brunFonce,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Cliquez sur le lien dans votre e-mail pour activer votre compte avant d’accéder aux annonces.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14,
-                  height: 1.5,
-                  color: AppTheme.brunFonce.withOpacity(0.7),
-                ),
-              ),
-
-              const Spacer(flex: 3),
-
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      '/connexion',
-                      (route) => false,
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.terracotta,
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                  Container(
+                    width: 78,
+                    height: 78,
+                    decoration: BoxDecoration(
+                      color: _orange.withValues(alpha: 0.13),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.mark_email_unread_rounded,
+                      color: _brown,
+                      size: 38,
                     ),
                   ),
-                  child: const Text(
-                    'J’ai vérifié, me connecter',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 14),
 
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: OutlinedButton(
-                  onPressed: _isResending ? null : _resendEmail,
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppTheme.terracotta,
-                    side: const BorderSide(
-                      color: AppTheme.terracotta,
-                      width: 1.5,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                  const SizedBox(height: 25),
+
+                  const Text(
+                    'V\u00e9rifiez votre bo\u00eete e-mail',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: _brown,
                     ),
                   ),
-                  child: _isResending
-                      ? const SizedBox(
-                          width: 22,
-                          height: 22,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2.5,
-                            color: AppTheme.terracotta,
-                          ),
-                        )
-                      : const Text(
-                          'Renvoyer l’e-mail',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextButton(
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/inscription');
-                },
-                child: Text(
-                  'Utiliser une autre adresse e-mail',
-                  style: TextStyle(
-                    color: AppTheme.brunFonce.withOpacity(0.8),
-                    fontWeight: FontWeight.w500,
+
+                  const SizedBox(height: 16),
+
+                  const Text(
+                    'Consultez votre adresse e-mail '
+                    'universitaire pour v\u00e9rifier '
+                    'votre compte.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 14,
+                      height: 1.5,
+                      color: _darkBrown,
+                    ),
                   ),
-                ),
+
+                  const SizedBox(height: 12),
+
+                  Text(
+                    _displayEmail,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: _brown,
+                    ),
+                  ),
+
+                  const SizedBox(height: 22),
+
+                  const Text(
+                    'Cliquez sur le lien de confirmation '
+                    'dans votre e-mail pour activer '
+                    'votre compte avant de vous connecter.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 13,
+                      height: 1.5,
+                      color: _darkBrown,
+                    ),
+                  ),
+
+                  const SizedBox(height: 45),
+
+                  _buildButton(
+                    text: "J'ai v\u00e9rifi\u00e9",
+                    onPressed: _handleVerified,
+                  ),
+
+                  const SizedBox(height: 14),
+
+                  _buildButton(
+                    text: "Renvoyer l'e-mail",
+                    onPressed: _handleResendEmail,
+                    outlined: true,
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(context, '/inscription');
+                    },
+                    child: const Text(
+                      'Utiliser une autre adresse e-mail',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: _brown,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+                ],
               ),
-              const SizedBox(height: 8),
-            ],
+            ),
           ),
         ),
       ),
