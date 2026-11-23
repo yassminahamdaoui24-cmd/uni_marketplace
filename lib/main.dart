@@ -16,6 +16,7 @@ import 'presentation/pages/publication_screen.dart';
 import 'presentation/pages/mes_annonces_screen.dart';
 import 'presentation/pages/favoris_screen.dart';
 import 'presentation/pages/profil_screen.dart';
+import 'auth_gate.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,28 +31,33 @@ class UniMarketplaceApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Uni Marketplace',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      initialRoute: '/bienvenue',
-      routes: {
-        '/bienvenue': (context) => const WelcomePage(),
-        '/connexion': (context) => const LoginPage(),
-        '/inscription': (context) => const RegisterPage(),
-        '/forgot-password': (context) => const ForgotPasswordPage(),
-        '/verification-email': (context) {
-          final email = ModalRoute.of(context)?.settings.arguments as String?;
+    
+return MaterialApp(
+  title: 'Uni Marketplace',
+  debugShowCheckedModeBanner: false,
+  theme: AppTheme.lightTheme,
 
-          return EmailVerificationPage(email: email);
-        },
-        '/catalogue': (context) => const CatalogueScreen(),
-        '/detail': (context) => const DetailAnnonceScreen(),
-        '/publication': (context) => const PublicationScreen(),
-        '/mes-annonces': (context) => const MesAnnoncesScreen(),
-        '/favoris': (context) => const FavorisScreen(),
-        '/profil': (context) => const ProfilScreen(),
-      },
-    );
+  home:  AuthGate(),
+
+  routes: {
+    '/bienvenue': (context) => const WelcomePage(),
+    '/connexion': (context) => const LoginPage(),
+    '/inscription': (context) => const RegisterPage(),
+    '/forgot-password': (context) => const ForgotPasswordPage(),
+    '/verification-email': (context) {
+  final email =
+      ModalRoute.of(context)?.settings.arguments as String?;
+
+  return EmailVerificationPage(email: email);
+},
+    '/catalogue': (context) => const CatalogueScreen(),
+    '/detail': (context) => const DetailAnnonceScreen(),
+    '/publication': (context) => const PublicationScreen(),
+    '/mes-annonces': (context) => const MesAnnoncesScreen(),
+    '/favoris': (context) => const FavorisScreen(),
+    '/profil': (context) => const ProfilScreen(),
+  },
+);
+
   }
 }
