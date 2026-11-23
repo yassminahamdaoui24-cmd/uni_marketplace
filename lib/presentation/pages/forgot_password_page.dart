@@ -1,21 +1,40 @@
 import 'package:flutter/material.dart';
 
-import '../../app_theme.dart';
-import '../../widgets/custom_button.dart';
 import '../widgets/auth_text_field.dart';
 
-class ForgotPasswordPage extends StatefulWidget {
+class ForgotPasswordPage extends StatelessWidget {
   const ForgotPasswordPage({super.key});
 
   @override
-  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      backgroundColor: Color(0xFFF5EBDD),
+      body: SafeArea(
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: ForgotPasswordSheet(),
+        ),
+      ),
+    );
+  }
 }
 
-class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+class ForgotPasswordSheet extends StatefulWidget {
+  const ForgotPasswordSheet({super.key});
+
+  @override
+  State<ForgotPasswordSheet> createState() => _ForgotPasswordSheetState();
+}
+
+class _ForgotPasswordSheetState extends State<ForgotPasswordSheet> {
+  static const Color _background = Color(0xFFF8F1E8);
+  static const Color _brown = Color(0xFF3E2922);
+  static const Color _orange = Color(0xFFC98249);
+
   final TextEditingController _emailController = TextEditingController();
-  bool _isLoading = false;
-  bool _emailSent = false;
+
   String? _emailError;
+  bool _formValidated = false;
 
   @override
   void dispose() {
@@ -23,154 +42,124 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     super.dispose();
   }
 
-  Future<void> _handleResetPassword() async {
-    setState(() => _emailError = null);
-
+  void _handleResetPassword() {
     final email = _emailController.text.trim();
-    if (email.isEmpty || !email.contains('@')) {
-      setState(() => _emailError = 'Veuillez entrer une adresse e-mail valide');
-      return;
-    }
 
-    setState(() => _isLoading = true);
+    final validEmail = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email);
 
-    // Simulation d'envoi d'email de réinitialisation
-    await Future.delayed(const Duration(seconds: 1));
-
-    if (!mounted) return;
     setState(() {
-      _isLoading = false;
-      _emailSent = true;
+      _emailError = validEmail
+          ? null
+          : 'Veuillez entrer une adresse e-mail valide';
+
+      _formValidated = validEmail;
     });
+
+    if (!validEmail) return;
+
+    // FRONTEND UNIQUEMENT
+    // Rihab connectera resetPassword(email) au Backend.
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.beige,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: AppTheme.brunFonce),
+    return Container(
+      width: double.infinity,
+      constraints: const BoxConstraints(maxWidth: 500),
+      decoration: const BoxDecoration(
+        color: _background,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  height: 72,
-                  width: 72,
+      child: SafeArea(
+        top: false,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(24, 12, 24, 30),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: Container(
+                  width: 44,
+                  height: 5,
                   decoration: BoxDecoration(
-                    color: AppTheme.terracotta.withValues(alpha: 0.12),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.lock_reset_rounded,
-                    size: 38,
-                    color: AppTheme.terracotta,
+                    color: const Color(0xFFD9D0C5),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                const SizedBox(height: 16),
+              ),
+
+              const SizedBox(height: 25),
+
+              const Text(
+                'Mot de passe oubli\u00E9 ?',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 19,
+                  fontWeight: FontWeight.bold,
+                  color: _brown,
+                ),
+              ),
+
+              const SizedBox(height: 15),
+
+              const Text(
+                'Entrez votre adresse e-mail universitaire '
+                'pour recevoir un lien de r\u00E9initialisation.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 13, height: 1.5, color: _brown),
+              ),
+
+              const SizedBox(height: 25),
+
+              AuthTextField(
+                figmaStyle: true,
+                label: 'Adresse e-mail universitaire',
+                controller: _emailController,
+                prefixIcon: Icons.email_outlined,
+                keyboardType: TextInputType.emailAddress,
+                errorText: _emailError,
+              ),
+
+              if (_formValidated) ...[
+                const SizedBox(height: 12),
                 const Text(
-                  'Mot de passe oublié ?',
+                  'Adresse e-mail valide. '
+                  'Envoi du lien en attente de connexion au Backend.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.brunFonce,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Entrez votre e-mail universitaire pour recevoir un lien de réinitialisation.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: AppTheme.brunFonce.withValues(alpha: 0.75),
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                if (_emailSent)
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 20),
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: Colors.green.shade50,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.green.shade300),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.check_circle_outline,
-                          color: Colors.green.shade800,
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
-                            'Un lien de réinitialisation a été envoyé à ${_emailController.text.trim()}.',
-                            style: TextStyle(
-                              color: Colors.green.shade900,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                AuthTextField(
-                  label: 'Adresse e-mail universitaire',
-                  hint: 'prenom.nom@ump.ac.ma',
-                  controller: _emailController,
-                  prefixIcon: Icons.email_outlined,
-                  keyboardType: TextInputType.emailAddress,
-                  errorText: _emailError,
-                  enabled: !_isLoading,
-                ),
-                const SizedBox(height: 24),
-
-                _isLoading
-                    ? ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppTheme.terracotta,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                        ),
-                        onPressed: null,
-                        child: const SizedBox(
-                          height: 22,
-                          width: 22,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2.5,
-                            color: AppTheme.creme,
-                          ),
-                        ),
-                      )
-                    : CustomButton(
-                        text: 'Envoyer le lien',
-                        onPressed: _handleResetPassword,
-                      ),
-                const SizedBox(height: 16),
-
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text(
-                    'Retour à la connexion',
-                    style: TextStyle(
-                      color: AppTheme.terracotta,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  style: TextStyle(color: _brown, fontSize: 12),
                 ),
               ],
-            ),
+
+              const SizedBox(height: 24),
+
+              Center(
+                child: SizedBox(
+                  width: 205,
+                  height: 46,
+                  child: ElevatedButton(
+                    onPressed: _handleResetPassword,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _orange,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      'Envoyer le lien',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 10),
+            ],
           ),
         ),
       ),

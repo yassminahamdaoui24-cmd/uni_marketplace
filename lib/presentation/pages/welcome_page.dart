@@ -1,63 +1,62 @@
 import 'package:flutter/material.dart';
 
-import '../../app_theme.dart';
-
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
+
+  static const Color _background = Color(0xFFF5EBDD);
+  static const Color _brown = Color(0xFF824C35);
+  static const Color _darkBrown = Color(0xFF3E2922);
+  static const Color _orange = Color(0xFFC98249);
+
+  Widget _buildLogo() {
+    return Column(
+      children: [
+        Image.asset(
+          'assets/images/Frame.png',
+          width: 110,
+          height: 110,
+          fit: BoxFit.contain,
+        ),
+        const SizedBox(height: 4),
+        Image.asset(
+          'assets/images/UniMarket.png',
+          width: 145,
+          fit: BoxFit.contain,
+        ),
+        const SizedBox(height: 4),
+        Image.asset('assets/images/Place.png', width: 60, fit: BoxFit.contain),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.beige,
+      backgroundColor: _background,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
           child: Column(
             children: [
               const Spacer(flex: 2),
 
-              // Logo / Icône UniMarket (t-qeddri t-beddlih b Image.asset men ba3d)
-              Container(
-                width: 110,
-                height: 110,
-                decoration: BoxDecoration(
-                  color: AppTheme.terracotta.withOpacity(0.15),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.storefront_rounded,
-                  size: 54,
-                  color: AppTheme.terracotta,
-                ),
-              ),
-              const SizedBox(height: 28),
+              // Logo original UniMarket + Place
+              _buildLogo(),
 
-              // Titre principal
+              const SizedBox(height: 25),
+
+              // Description de l'application
               const Text(
-                'UniMarket',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.brunFonce,
-                  letterSpacing: -0.5,
-                ),
-              ),
-              const SizedBox(height: 12),
-
-              // Sous-titre / Slogan étudiant
-              Text(
-                'Achetez, vendez et échangez vos fournitures, livres et équipements entre étudiants de votre université.',
+                'Achetez et vendez vos fournitures, livres '
+                'et équipements entre étudiants '
+                'de votre université.',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 15,
-                  height: 1.5,
-                  color: AppTheme.brunFonce.withOpacity(0.75),
-                ),
+                style: TextStyle(fontSize: 15, height: 1.5, color: _darkBrown),
               ),
 
               const Spacer(flex: 3),
 
-              // Bouton principal : Se connecter
+              // Bouton Se connecter
               SizedBox(
                 width: double.infinity,
                 height: 52,
@@ -66,11 +65,11 @@ class WelcomePage extends StatelessWidget {
                     Navigator.pushNamed(context, '/connexion');
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.terracotta,
+                    backgroundColor: _orange,
                     foregroundColor: Colors.white,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                   child: const Text(
@@ -79,9 +78,10 @@ class WelcomePage extends StatelessWidget {
                   ),
                 ),
               ),
+
               const SizedBox(height: 14),
 
-              // Bouton secondaire : Créer un compte
+              // Bouton Créer un compte
               SizedBox(
                 width: double.infinity,
                 height: 52,
@@ -90,13 +90,10 @@ class WelcomePage extends StatelessWidget {
                     Navigator.pushNamed(context, '/inscription');
                   },
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: AppTheme.terracotta,
-                    side: const BorderSide(
-                      color: AppTheme.terracotta,
-                      width: 1.5,
-                    ),
+                    foregroundColor: _brown,
+                    side: const BorderSide(color: _brown, width: 1.5),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                   child: const Text(
@@ -105,6 +102,7 @@ class WelcomePage extends StatelessWidget {
                   ),
                 ),
               ),
+
               const SizedBox(height: 16),
             ],
           ),

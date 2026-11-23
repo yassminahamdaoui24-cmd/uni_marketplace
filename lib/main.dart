@@ -8,6 +8,8 @@ import 'presentation/pages/welcome_page.dart';
 import 'presentation/pages/login_page.dart';
 import 'presentation/pages/register_page.dart';
 import 'presentation/pages/forgot_password_page.dart';
+import 'presentation/pages/email_verification_page.dart';
+
 import 'presentation/pages/catalogue_screen.dart';
 import 'presentation/pages/detail_annonce_screen.dart';
 import 'presentation/pages/publication_screen.dart';
@@ -19,13 +21,10 @@ import 'auth_gate.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(const UniMarketplaceApp());
 }
-
 
 class UniMarketplaceApp extends StatelessWidget {
   const UniMarketplaceApp({super.key});
@@ -45,6 +44,12 @@ return MaterialApp(
     '/connexion': (context) => const LoginPage(),
     '/inscription': (context) => const RegisterPage(),
     '/forgot-password': (context) => const ForgotPasswordPage(),
+    '/verification-email': (context) {
+  final email =
+      ModalRoute.of(context)?.settings.arguments as String?;
+
+  return EmailVerificationPage(email: email);
+},
     '/catalogue': (context) => const CatalogueScreen(),
     '/detail': (context) => const DetailAnnonceScreen(),
     '/publication': (context) => const PublicationScreen(),
