@@ -10,9 +10,6 @@ import 'presentation/pages/register_page.dart';
 import 'presentation/pages/forgot_password_page.dart';
 import 'presentation/pages/email_verification_page.dart';
 
-import 'presentation/pages/bienvenue_screen.dart';
-import 'presentation/pages/connexion_screen.dart';
-import 'presentation/pages/inscription_screen.dart';
 import 'presentation/pages/catalogue_screen.dart';
 import 'presentation/pages/detail_annonce_screen.dart';
 import 'presentation/pages/publication_screen.dart';
@@ -23,13 +20,10 @@ import 'presentation/pages/profil_screen.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(const UniMarketplaceApp());
 }
-
 
 class UniMarketplaceApp extends StatelessWidget {
   const UniMarketplaceApp({super.key});
