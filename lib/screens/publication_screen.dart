@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/annonce_model.dart';
 import '../services/mock_annonces.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class PublicationScreen extends StatefulWidget {
   const PublicationScreen({super.key});
@@ -10,6 +12,10 @@ class PublicationScreen extends StatefulWidget {
 }
 
 class _PublicationScreenState extends State<PublicationScreen> {
+
+  final ImagePicker picker = ImagePicker();
+File? imageSelectionnee;
+
   static const Color brun = Color(0xFF3E2922);
   static const Color terracotta = Color(0xFF824C35);
   static const Color caramel = Color(0xFFC98249);
@@ -23,6 +29,18 @@ class _PublicationScreenState extends State<PublicationScreen> {
   final prixController = TextEditingController();
 
   String? categorieSelectionnee;
+
+  Future<void> choisirImage() async {
+  final XFile? image = await picker.pickImage(
+    source: ImageSource.gallery,
+  );
+
+  if (image != null) {
+    setState(() {
+      imageSelectionnee = File(image.path);
+    });
+  }
+}
 
   final List<String> categories = [
     'Matériel informatique',
@@ -48,7 +66,7 @@ class _PublicationScreenState extends State<PublicationScreen> {
       description: descriptionController.text.trim(),
       prix: double.parse(prixController.text.trim()),
       categorie: categorieSelectionnee!,
-      imageUrl: '',
+      imageUrl: imageSelectionnee?.path ?? '',
       vendeurId: 'user1',
       datePublication: DateTime.now(),
       statut: 'Disponible',
@@ -67,8 +85,9 @@ class _PublicationScreenState extends State<PublicationScreen> {
     prixController.clear();
 
     setState(() {
-      categorieSelectionnee = null;
-    });
+  categorieSelectionnee = null;
+  imageSelectionnee = null;
+});
   }
 
   InputDecoration decoration(String label, IconData icon) {
@@ -123,27 +142,47 @@ class _PublicationScreenState extends State<PublicationScreen> {
               ),
               const SizedBox(height: 22),
 
-              Container(
-                width: double.infinity,
-                height: 120,
-                decoration: BoxDecoration(
-                  color: creme,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: caramel),
-                ),
-                child: const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.add_a_photo_outlined,
-                        size: 38, color: terracotta),
-                    SizedBox(height: 8),
-                    Text(
-                      'Ajouter une photo prochainement',
-                      style: TextStyle(color: brun),
-                    ),
-                  ],
-                ),
+              GestureDetector(
+  onTap: choisirImage,
+  child: Container(
+    width: double.infinity,
+    height: 180,
+    decoration: BoxDecoration(
+      color: creme,
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: caramel),
+    ),
+    child: imageSelectionnee != null
+        ? ClipRRect(
+            borderRadius: BorderRadius.circular(15),
+            child: Image.file(
+              imageSelectionnee!,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+          )
+        : const Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.add_a_photo_outlined,
+                size: 38,
+                color: terracotta,
               ),
+              SizedBox(height: 8),
+              Text(
+                'Ajouter une photo',
+                style: TextStyle(color: brun),
+              ),
+              SizedBox(height: 4),
+              Text(
+                'Choisir depuis la galerie',
+                style: TextStyle(color: terracotta, fontSize: 12),
+              ),
+            ],
+          ),
+  ),
+),
               const SizedBox(height: 20),
 
               TextFormField(

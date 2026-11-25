@@ -291,46 +291,47 @@ class _DetailAnnonceScreenState extends State<DetailAnnonceScreen> {
       ),
 
       // BOTTOM NAVIGATION
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: creme,
-        selectedItemColor: terracotta,
-        unselectedItemColor: brun,
-        currentIndex: 0,
-        onTap: (index) {
-          if (index == 0) {
-            Navigator.pushReplacementNamed(context, '/catalogue');
-          } else if (index == 1) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Recherche prochainement disponible'),
-              ),
-            );
-          } else if (index == 2) {
-            Navigator.pushNamed(context, '/publication');
-          } else if (index == 3) {
-            Navigator.pushNamed(context, '/profil');
-          }
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            label: 'Accueil',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Recherche',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_box_outlined),
-            label: 'Publier',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: 'Profil',
-          ),
-        ],
-      ),
+     bottomNavigationBar: BottomNavigationBar(
+  type: BottomNavigationBarType.fixed,
+  backgroundColor: creme,
+  selectedItemColor: terracotta,
+  unselectedItemColor: brun,
+  currentIndex: 0,
+  onTap: (index) {
+    switch (index) {
+      case 0:
+        Navigator.pushReplacementNamed(context, '/catalogue');
+        break;
+      case 1:
+        Navigator.pushNamed(context, '/publication');
+        break;
+      case 2:
+        Navigator.pushNamed(context, '/favoris');
+        break;
+      case 3:
+        Navigator.pushNamed(context, '/profil');
+        break;
+    }
+  },
+  items: const [
+    BottomNavigationBarItem(
+      icon: Icon(Icons.home_outlined),
+      label: 'Accueil',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.add_circle_outline),
+      label: 'Ajouter',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.favorite_border),
+      label: 'Favoris',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.person_outline),
+      label: 'Profil',
+    ),
+  ],
+),
     );
   }
 

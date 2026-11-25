@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/annonce_model.dart';
 import '../services/mock_annonces.dart';
+import 'dart:io';
 
 class MesAnnoncesScreen extends StatefulWidget {
   const MesAnnoncesScreen({super.key});
@@ -181,22 +182,31 @@ class _MesAnnoncesScreenState extends State<MesAnnoncesScreen> {
                   width: 105,
                   height: 110,
                   color: beige,
-                  child: annonce.imageUrl.isNotEmpty
-                      ? Image.network(
-                          annonce.imageUrl,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) =>
-                              const Icon(
-                            Icons.image_outlined,
-                            size: 40,
-                            color: terracotta,
-                          ),
-                        )
-                      : const Icon(
-                          Icons.image_outlined,
+                 child: annonce.imageUrl.isEmpty
+                   ? const Icon(
+                   Icons.image_outlined,
+                    size: 40,
+                   color: terracotta,
+                  )
+                   : annonce.imageUrl.startsWith('http')
+                     ? Image.network(
+                     annonce.imageUrl,
+                      fit: BoxFit.cover,
+                       errorBuilder: (_, __, ___) => const Icon(
+                         Icons.image_outlined,
                           size: 40,
                           color: terracotta,
-                        ),
+                         ),
+                    )
+                      : Image.file(
+                     File(annonce.imageUrl),
+                      fit: BoxFit.cover,
+                       errorBuilder: (_, __, ___) => const Icon(
+                       Icons.image_outlined,
+                        size: 40,
+                       color: terracotta,
+                       ),
+                     ),
                 ),
               ),
               const SizedBox(width: 13),
