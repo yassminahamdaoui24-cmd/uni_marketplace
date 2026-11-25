@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'presentation/pages/login_page.dart';
 import 'presentation/pages/catalogue_screen.dart';
-
+import 'presentation/pages/email_verification_page.dart';
 class AuthGate extends StatelessWidget {
   AuthGate({super.key});
 
@@ -34,15 +34,11 @@ class AuthGate extends StatelessWidget {
         final user = snapshot.data!;
 
         // Verification de l'email
-        if (!user.emailVerified) {
-          return const Scaffold(
-            body: Center(
-              child: Text(
-                'Veuillez verifier votre adresse email.',
-              ),
-            ),
-          );
-        }
+if (!user.emailVerified) {
+  return EmailVerificationPage(
+    email: user.email,
+  );
+}
 
         // Utilisateur connecte et email verifie
         return CatalogueScreen();

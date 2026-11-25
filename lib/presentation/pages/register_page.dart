@@ -1,6 +1,8 @@
+
 import 'package:flutter/material.dart';
 
 import '../widgets/auth_text_field.dart';
+import '../../services/auth_service.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -21,6 +23,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
+  bool _isLoading = false;
+
   String? _nameError;
   String? _firstNameError;
   String? _phoneError;
@@ -39,7 +43,9 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
-  void _handleRegister() {
+  Future<void> _handleRegister() async {
+    if (_isLoading) return;
+
     final name = _nameController.text.trim();
     final firstName = _firstNameController.text.trim();
     final phone = _phoneController.text.trim();
@@ -48,16 +54,23 @@ class _RegisterPageState extends State<RegisterPage> {
     final confirmation = _confirmPasswordController.text;
 
     setState(() {
-      _nameError = name.isEmpty ? 'Veuillez entrer votre nom' : null;
+      _nameError = name.isEmpty
+          ? 'Veuillez entrer votre nom'
+          : null;
 
       _firstNameError = firstName.isEmpty
           ? 'Veuillez entrer votre prénom'
           : null;
 
-      _phoneError = phone.isEmpty ? 'Veuillez entrer votre téléphone' : null;
+      _phoneError = phone.isEmpty
+          ? 'Veuillez entrer votre téléphone'
+          : null;
 
-      _emailError = !RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email)
-          ? 'Veuillez entrer une adresse e-mail valide'
+      _emailError =
+          !RegExp(r'^[^@\s]+@ump\.ac\.ma$',
+                  caseSensitive: false)
+              .hasMatch(email)
+          ? 'Veuillez utiliser votre adresse e-mail universitaire UMP'
           : null;
 
       _passwordError = password.length < 6
@@ -65,9 +78,11 @@ class _RegisterPageState extends State<RegisterPage> {
           : null;
 
       if (confirmation.isEmpty) {
-        _confirmPasswordError = 'Veuillez confirmer votre mot de passe';
+        _confirmPasswordError =
+            'Veuillez confirmer votre mot de passe';
       } else if (password != confirmation) {
-        _confirmPasswordError = 'Les mots de passe ne correspondent pas';
+        _confirmPasswordError =
+            'Les mots de passe ne correspondent pas';
       } else {
         _confirmPasswordError = null;
       }
@@ -82,34 +97,57 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
-    // Frontend uniquement.
-    // Rihab connectera le formulaire au Backend.
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Formulaire valide. En attente de connexion au Backend.'),
-      ),
-    );
-  }
+    setState(() => _isLoading = true);
 
-  Widget _buildLogo() {
-    return Column(
-      children: [
-        Image.asset(
-          'assets/images/Frame.png',
-          width: 84,
-          height: 83,
-          fit: BoxFit.contain,
+    try {
+      final credential =
+          await AuthService.instance.verifierEmail(
+        nom: name,
+        prenom: firstName,
+        email: email,
+        telephone: phone,
+        password: password,
+      );
+
+      if (!mounted) return;
+
+      if (credential != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Compte créé ! Vérifiez votre boîte mail universitaire.',
+            ),
+          ),
+        );
+
+        Navigator.pushReplacementNamed(
+           context,
+           '/verification-email',
+           arguments: email.trim(),
+);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Échec de la création du compte. '
+              'Vérifiez votre adresse e-mail et réessayez.',
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Une erreur est survenue : $e'),
         ),
-        const SizedBox(height: 2),
-        Image.asset(
-          'assets/images/UniMarket.png',
-          width: 110,
-          fit: BoxFit.contain,
-        ),
-        const SizedBox(height: 2),
-        Image.asset('assets/images/Place.png', width: 46, fit: BoxFit.contain),
-      ],
-    );
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
   }
 
   Widget _buildField({
@@ -144,13 +182,37 @@ class _RegisterPageState extends State<RegisterPage> {
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 12,
+            ),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 400),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _buildLogo(),
+                  Column(
+                    children: [
+                      Image.asset(
+                        'assets/images/Frame.png',
+                        width: 84,
+                        height: 83,
+                        fit: BoxFit.contain,
+                      ),
+                      const SizedBox(height: 2),
+                      Image.asset(
+                        'assets/images/UniMarket.png',
+                        width: 110,
+                        fit: BoxFit.contain,
+                      ),
+                      const SizedBox(height: 2),
+                      Image.asset(
+                        'assets/images/Place.png',
+                        width: 46,
+                        fit: BoxFit.contain,
+                      ),
+                    ],
+                  ),
 
                   const SizedBox(height: 30),
 
@@ -229,22 +291,33 @@ class _RegisterPageState extends State<RegisterPage> {
                       width: 205,
                       height: 46,
                       child: ElevatedButton(
-                        onPressed: _handleRegister,
+                        onPressed:
+                            _isLoading ? null : _handleRegister,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: _orange,
                           foregroundColor: Colors.white,
+                          disabledBackgroundColor: _orange,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text(
-                          "S'inscrire",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        child: _isLoading
+                            ? const SizedBox(
+                                width: 22,
+                                height: 22,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.5,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Text(
+                                "S'inscrire",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                       ),
                     ),
                   ),
@@ -254,14 +327,22 @@ class _RegisterPageState extends State<RegisterPage> {
                   const Text(
                     'Déjà un compte ?',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 13, color: _brown),
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: _brown,
+                    ),
                   ),
 
                   Center(
                     child: TextButton(
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(context, '/connexion');
-                      },
+                      onPressed: _isLoading
+                          ? null
+                          : () {
+                              Navigator.pushReplacementNamed(
+                                context,
+                                '/connexion',
+                              );
+                            },
                       child: const Text(
                         'Se connecter',
                         style: TextStyle(
