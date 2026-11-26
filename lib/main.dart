@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-import 'app_theme.dart';
+import 'core/theme/app_theme.dart';
 import 'firebase_options.dart';
 
 import 'presentation/pages/welcome_page.dart';
@@ -17,6 +17,7 @@ import 'presentation/pages/mes_annonces_screen.dart';
 import 'presentation/pages/favoris_screen.dart';
 import 'presentation/pages/profil_screen.dart';
 import 'auth_gate.dart';
+import 'presentation/pages/recherche_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,33 +32,31 @@ class UniMarketplaceApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
-return MaterialApp(
-  title: 'Uni Marketplace',
-  debugShowCheckedModeBanner: false,
-  theme: AppTheme.lightTheme,
+    return MaterialApp(
+      title: 'Uni Marketplace',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.lightTheme,
 
-  home:  AuthGate(),
+      home: AuthGate(),
 
-  routes: {
-    '/bienvenue': (context) => const WelcomePage(),
-    '/connexion': (context) => const LoginPage(),
-    '/inscription': (context) => const RegisterPage(),
-    '/forgot-password': (context) => const ForgotPasswordPage(),
-    '/verification-email': (context) {
-  final email =
-      ModalRoute.of(context)?.settings.arguments as String?;
+      routes: {
+        '/bienvenue': (context) => const WelcomePage(),
+        '/connexion': (context) => const LoginPage(),
+        '/inscription': (context) => const RegisterPage(),
+        '/forgot-password': (context) => const ForgotPasswordPage(),
+        '/verification-email': (context) {
+          final email = ModalRoute.of(context)?.settings.arguments as String?;
 
-  return EmailVerificationPage(email: email);
-},
-    '/catalogue': (context) => const CatalogueScreen(),
-    '/detail': (context) => const DetailAnnonceScreen(),
-    '/publication': (context) => const PublicationScreen(),
-    '/mes-annonces': (context) => const MesAnnoncesScreen(),
-    '/favoris': (context) => const FavorisScreen(),
-    '/profil': (context) => const ProfilScreen(),
-  },
-);
-
+          return EmailVerificationPage(email: email);
+        },
+        '/catalogue': (context) => const CatalogueScreen(),
+        '/recherche': (context) => const RechercheScreen(),
+        '/detail': (context) => const DetailAnnonceScreen(),
+        '/publication': (context) => const PublicationScreen(),
+        '/mes-annonces': (context) => const MesAnnoncesScreen(),
+        '/favoris': (context) => const FavorisScreen(),
+        '/profil': (context) => const ProfilScreen(),
+      },
+    );
   }
 }
