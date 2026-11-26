@@ -69,7 +69,7 @@ class _PublicationScreenState extends State<PublicationScreen> {
       imageUrl: imageSelectionnee?.path ?? '',
       vendeurId: 'user1',
       datePublication: DateTime.now(),
-      statut: 'Disponible',
+      statut: AnnonceModel.statutDisponible,
     );
 
     mockAnnonces.add(nouvelleAnnonce);

@@ -31,7 +31,7 @@ class _DetailAnnonceScreenState extends State<DetailAnnonceScreen> {
       );
     }
 
-    final bool disponible = produit.statut == 'Disponible';
+    final bool disponible = produit.statut == AnnonceModel.statutDisponible;
 
     return Scaffold(
       backgroundColor: beige,

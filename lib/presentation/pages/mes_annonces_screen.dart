@@ -147,7 +147,7 @@ class _MesAnnoncesScreenState extends State<MesAnnoncesScreen> {
   }
 
   Widget carteAnnonce(AnnonceModel annonce) {
-    final disponible = annonce.statut == 'Disponible';
+    final disponible = annonce.statut == AnnonceModel.statutDisponible;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),

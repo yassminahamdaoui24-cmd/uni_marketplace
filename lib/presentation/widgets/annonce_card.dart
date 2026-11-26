@@ -17,7 +17,7 @@ class AnnonceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool disponible = annonce.statut == 'Disponible';
+    final bool disponible = annonce.statut == AnnonceModel.statutDisponible;
 
     return Card(
       color: creme,
