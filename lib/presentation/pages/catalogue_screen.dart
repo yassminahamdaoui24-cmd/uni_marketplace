@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import '../presentation/widgets/annonce_card.dart';
-import '../services/mock_annonces.dart';
+
+import '../widgets/annonce_card.dart';
+import '../../services/mock_annonces.dart';
 import 'detail_annonce_screen.dart';
+
 class CatalogueScreen extends StatelessWidget {
   const CatalogueScreen({super.key});
 
@@ -23,30 +25,27 @@ class CatalogueScreen extends StatelessWidget {
         elevation: 0,
         title: const Text(
           'UniMarket',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 23,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
         ),
-       actions: [
-  IconButton(
-    onPressed: () {},
-    icon: const Icon(Icons.notifications_none),
-  ),
-  IconButton(
-    tooltip: 'Mes annonces',
-    onPressed: () {
-      Navigator.pushNamed(context, '/mes-annonces');
-    },
-    icon: const Icon(Icons.inventory_2_outlined),
-  ),
-  IconButton(
-    onPressed: () {
-      Navigator.pushNamed(context, '/profil');
-    },
-    icon: const Icon(Icons.person_outline),
-  ),
-],
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.notifications_none),
+          ),
+          IconButton(
+            tooltip: 'Mes annonces',
+            onPressed: () {
+              Navigator.pushNamed(context, '/mes-annonces');
+            },
+            icon: const Icon(Icons.inventory_2_outlined),
+          ),
+          IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/profil');
+            },
+            icon: const Icon(Icons.person_outline),
+          ),
+        ],
       ),
 
       // CONTENU PRINCIPAL
@@ -59,14 +58,10 @@ class CatalogueScreen extends StatelessWidget {
             TextField(
               decoration: InputDecoration(
                 hintText: 'Rechercher un produit...',
-                prefixIcon: const Icon(
-                  Icons.search,
-                  color: terracotta,
-                ),
+                prefixIcon: const Icon(Icons.search, color: terracotta),
                 filled: true,
                 fillColor: Colors.white,
-                contentPadding:
-                    const EdgeInsets.symmetric(vertical: 14),
+                contentPadding: const EdgeInsets.symmetric(vertical: 14),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
                   borderSide: BorderSide.none,
@@ -93,22 +88,10 @@ class CatalogueScreen extends StatelessWidget {
 
             Row(
               children: [
-                _categoryItem(
-                  Icons.computer,
-                  'Matériel\ninformatique',
-                ),
-                _categoryItem(
-                  Icons.menu_book,
-                  'Livres et\ndocuments',
-                ),
-                _categoryItem(
-                  Icons.description_outlined,
-                  'Polycopiés',
-                ),
-                _categoryItem(
-                  Icons.edit,
-                  'Fournitures',
-                ),
+                _categoryItem(Icons.computer, 'Matériel\ninformatique'),
+                _categoryItem(Icons.menu_book, 'Livres et\ndocuments'),
+                _categoryItem(Icons.description_outlined, 'Polycopiés'),
+                _categoryItem(Icons.edit, 'Fournitures'),
               ],
             ),
 
@@ -130,8 +113,7 @@ class CatalogueScreen extends StatelessWidget {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: mockAnnonces.length,
-              gridDelegate:
-                  const SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
@@ -142,13 +124,12 @@ class CatalogueScreen extends StatelessWidget {
                   annonce: mockAnnonces[index],
                   onTap: () {
                     Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (context) => DetailAnnonceScreen(
-      annonce: mockAnnonces[index],
-    ),
-  ),
-);
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            DetailAnnonceScreen(annonce: mockAnnonces[index]),
+                      ),
+                    );
                   },
                 );
               },
@@ -159,53 +140,50 @@ class CatalogueScreen extends StatelessWidget {
 
       // BARRE DE NAVIGATION
       bottomNavigationBar: BottomNavigationBar(
-  type: BottomNavigationBarType.fixed,
-  backgroundColor: creme,
-  selectedItemColor: terracotta,
-  unselectedItemColor: brun,
-  currentIndex: 0,
-  onTap: (index) {
-    switch (index) {
-      case 0:
-        break;
-      case 1:
-        Navigator.pushNamed(context, '/publication');
-        break;
-      case 2:
-        Navigator.pushNamed(context, '/favoris');
-        break;
-      case 3:
-        Navigator.pushNamed(context, '/profil');
-        break;
-    }
-  },
-  items: const [
-    BottomNavigationBarItem(
-      icon: Icon(Icons.home_outlined),
-      label: 'Accueil',
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.add_circle_outline),
-      label: 'Ajouter',
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.favorite_border),
-      label: 'Favoris',
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.person_outline),
-      label: 'Profil',
-    ),
-  ],
-),
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: creme,
+        selectedItemColor: terracotta,
+        unselectedItemColor: brun,
+        currentIndex: 0,
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              break;
+            case 1:
+              Navigator.pushNamed(context, '/publication');
+              break;
+            case 2:
+              Navigator.pushNamed(context, '/favoris');
+              break;
+            case 3:
+              Navigator.pushNamed(context, '/profil');
+              break;
+          }
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            label: 'Accueil',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_circle_outline),
+            label: 'Ajouter',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite_border),
+            label: 'Favoris',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            label: 'Profil',
+          ),
+        ],
+      ),
     );
   }
 
   // WIDGET DES CATEGORIES
-  static Widget _categoryItem(
-    IconData icon,
-    String title,
-  ) {
+  static Widget _categoryItem(IconData icon, String title) {
     return Expanded(
       child: Column(
         children: [
@@ -216,11 +194,7 @@ class CatalogueScreen extends StatelessWidget {
               color: creme,
               borderRadius: BorderRadius.circular(14),
             ),
-            child: Icon(
-              icon,
-              color: terracotta,
-              size: 27,
-            ),
+            child: Icon(icon, color: terracotta, size: 27),
           ),
           const SizedBox(height: 7),
           Text(

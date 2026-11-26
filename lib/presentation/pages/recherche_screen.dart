@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../models/annonce_model.dart';
+
+import '../../data/models/annonce_model.dart';
 import '../../services/mock_annonces.dart';
-import '../presentation/widgets/annonce_card.dart';
+import '../widgets/annonce_card.dart';
 import 'detail_annonce_screen.dart';
 
 class RechercheScreen extends StatefulWidget {
@@ -13,7 +14,7 @@ class RechercheScreen extends StatefulWidget {
 
 class _RechercheScreenState extends State<RechercheScreen> {
   bool isLoading = false;
-bool hasError = false;
+  bool hasError = false;
   final TextEditingController searchController = TextEditingController();
   final TextEditingController minPriceController = TextEditingController();
   final TextEditingController maxPriceController = TextEditingController();
@@ -33,24 +34,18 @@ bool hasError = false;
     List<AnnonceModel> results = mockAnnonces.where((annonce) {
       final search = searchController.text.toLowerCase();
 
-      final matchesName =
-          annonce.titre.toLowerCase().contains(search);
+      final matchesName = annonce.titre.toLowerCase().contains(search);
 
       final matchesCategory =
           selectedCategory == 'Toutes' ||
-          annonce.categorie.toLowerCase() ==
-              selectedCategory.toLowerCase();
+          annonce.categorie.toLowerCase() == selectedCategory.toLowerCase();
 
-      final minPrice =
-          double.tryParse(minPriceController.text) ?? 0;
+      final minPrice = double.tryParse(minPriceController.text) ?? 0;
 
       final maxPrice =
-          double.tryParse(maxPriceController.text) ??
-          double.infinity;
+          double.tryParse(maxPriceController.text) ?? double.infinity;
 
-      final matchesPrice =
-          annonce.prix >= minPrice &&
-          annonce.prix <= maxPrice;
+      final matchesPrice = annonce.prix >= minPrice && annonce.prix <= maxPrice;
 
       return matchesName && matchesCategory && matchesPrice;
     }).toList();
@@ -98,10 +93,7 @@ bool hasError = false;
               onChanged: (_) => setState(() {}),
               decoration: InputDecoration(
                 hintText: 'Rechercher un produit...',
-                prefixIcon: const Icon(
-                  Icons.search,
-                  color: terracotta,
-                ),
+                prefixIcon: const Icon(Icons.search, color: terracotta),
                 filled: true,
                 fillColor: Colors.white,
                 border: OutlineInputBorder(
@@ -135,10 +127,7 @@ bool hasError = false;
                 ),
               ),
               items: categories.map((category) {
-                return DropdownMenuItem(
-                  value: category,
-                  child: Text(category),
-                );
+                return DropdownMenuItem(value: category, child: Text(category));
               }).toList(),
               onChanged: (value) {
                 setState(() {
@@ -222,10 +211,7 @@ bool hasError = false;
                 ),
               ),
               items: const [
-                DropdownMenuItem(
-                  value: 'Aucun',
-                  child: Text('Aucun'),
-                ),
+                DropdownMenuItem(value: 'Aucun', child: Text('Aucun')),
                 DropdownMenuItem(
                   value: 'Prix croissant',
                   child: Text('Prix croissant'),
@@ -255,99 +241,86 @@ bool hasError = false;
 
             const SizedBox(height: 12),
 
-           if (isLoading)
-  const Center(
-    child: Padding(
-      padding: EdgeInsets.all(30),
-      child: CircularProgressIndicator(
-        color: terracotta,
-      ),
-    ),
-  )
-else if (hasError)
-  Center(
-    child: Padding(
-      padding: const EdgeInsets.all(30),
-      child: Column(
-        children: [
-          const Icon(
-            Icons.error_outline,
-            size: 55,
-            color: terracotta,
-          ),
-          const SizedBox(height: 10),
-          const Text(
-            'Une erreur est survenue.',
-            style: TextStyle(
-              color: brun,
-              fontSize: 16,
-            ),
-          ),
-          const SizedBox(height: 12),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                hasError = false;
-              });
-            },
-            child: const Text('Réessayer'),
-          ),
-        ],
-      ),
-    ),
-  )
-else if (annonces.isEmpty)
-  const Center(
-    child: Padding(
-      padding: EdgeInsets.all(30),
-      child: Column(
-        children: [
-          Icon(
-            Icons.search_off,
-            size: 55,
-            color: terracotta,
-          ),
-          SizedBox(height: 10),
-          Text(
-            'Aucun résultat trouvé',
-            style: TextStyle(
-              fontSize: 16,
-              color: brun,
-            ),
-          ),
-        ],
-      ),
-    ),
-  )
-else
-  GridView.builder(
-    shrinkWrap: true,
-    physics: const NeverScrollableScrollPhysics(),
-    itemCount: annonces.length,
-    gridDelegate:
-        const SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 2,
-      crossAxisSpacing: 12,
-      mainAxisSpacing: 12,
-      childAspectRatio: 0.65,
-    ),
-    itemBuilder: (context, index) {
-      final annonce = annonces[index];
+            if (isLoading)
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(30),
+                  child: CircularProgressIndicator(color: terracotta),
+                ),
+              )
+            else if (hasError)
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(30),
+                  child: Column(
+                    children: [
+                      const Icon(
+                        Icons.error_outline,
+                        size: 55,
+                        color: terracotta,
+                      ),
+                      const SizedBox(height: 10),
+                      const Text(
+                        'Une erreur est survenue.',
+                        style: TextStyle(color: brun, fontSize: 16),
+                      ),
+                      const SizedBox(height: 12),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            hasError = false;
+                          });
+                        },
+                        child: const Text('Réessayer'),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            else if (annonces.isEmpty)
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(30),
+                  child: Column(
+                    children: [
+                      Icon(Icons.search_off, size: 55, color: terracotta),
+                      SizedBox(height: 10),
+                      Text(
+                        'Aucun résultat trouvé',
+                        style: TextStyle(fontSize: 16, color: brun),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            else
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: annonces.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 0.65,
+                ),
+                itemBuilder: (context, index) {
+                  final annonce = annonces[index];
 
-      return AnnonceCard(
-        annonce: annonce,
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  DetailAnnonceScreen(annonce: annonce),
-            ),
-          );
-        },
-      );
-    },
-  ),
+                  return AnnonceCard(
+                    annonce: annonce,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              DetailAnnonceScreen(annonce: annonce),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
           ],
         ),
       ),

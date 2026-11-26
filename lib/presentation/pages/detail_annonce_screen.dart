@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
-import '../models/annonce_model.dart';
+
+import '../../data/models/annonce_model.dart';
 
 class DetailAnnonceScreen extends StatefulWidget {
   final AnnonceModel? annonce;
 
-  const DetailAnnonceScreen({
-    super.key,
-    this.annonce,
-  });
+  const DetailAnnonceScreen({super.key, this.annonce});
 
   @override
-  State<DetailAnnonceScreen> createState() =>
-      _DetailAnnonceScreenState();
+  State<DetailAnnonceScreen> createState() => _DetailAnnonceScreenState();
 }
 
 class _DetailAnnonceScreenState extends State<DetailAnnonceScreen> {
@@ -30,9 +27,7 @@ class _DetailAnnonceScreenState extends State<DetailAnnonceScreen> {
     if (produit == null) {
       return Scaffold(
         backgroundColor: beige,
-        body: const Center(
-          child: Text('Aucun produit sélectionné'),
-        ),
+        body: const Center(child: Text('Aucun produit sélectionné')),
       );
     }
 
@@ -48,10 +43,7 @@ class _DetailAnnonceScreenState extends State<DetailAnnonceScreen> {
         elevation: 0,
         title: const Text(
           'Détail du produit',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
         actions: [
           IconButton(
@@ -84,7 +76,6 @@ class _DetailAnnonceScreenState extends State<DetailAnnonceScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             // IMAGE DU PRODUIT
             Stack(
               children: [
@@ -102,8 +93,7 @@ class _DetailAnnonceScreenState extends State<DetailAnnonceScreen> {
                             produit.imageUrl,
                             width: double.infinity,
                             fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) =>
-                                const Icon(
+                            errorBuilder: (_, __, ___) => const Icon(
                               Icons.image_outlined,
                               size: 75,
                               color: terracotta,
@@ -178,10 +168,7 @@ class _DetailAnnonceScreenState extends State<DetailAnnonceScreen> {
 
             // PRIX
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 10,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               decoration: BoxDecoration(
                 color: creme,
                 borderRadius: BorderRadius.circular(25),
@@ -227,10 +214,7 @@ class _DetailAnnonceScreenState extends State<DetailAnnonceScreen> {
                 children: [
                   const CircleAvatar(
                     backgroundColor: terracotta,
-                    child: Icon(
-                      Icons.person,
-                      color: Colors.white,
-                    ),
+                    child: Icon(Icons.person, color: Colors.white),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -243,10 +227,7 @@ class _DetailAnnonceScreenState extends State<DetailAnnonceScreen> {
                       ),
                     ),
                   ),
-                  const Icon(
-                    Icons.chevron_right,
-                    color: brun,
-                  ),
+                  const Icon(Icons.chevron_right, color: brun),
                 ],
               ),
             ),
@@ -271,9 +252,7 @@ class _DetailAnnonceScreenState extends State<DetailAnnonceScreen> {
                     : null,
                 icon: const Icon(Icons.chat_bubble_outline),
                 label: Text(
-                  disponible
-                      ? 'Contacter le vendeur'
-                      : 'Produit vendu',
+                  disponible ? 'Contacter le vendeur' : 'Produit vendu',
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: terracotta,
@@ -291,47 +270,47 @@ class _DetailAnnonceScreenState extends State<DetailAnnonceScreen> {
       ),
 
       // BOTTOM NAVIGATION
-     bottomNavigationBar: BottomNavigationBar(
-  type: BottomNavigationBarType.fixed,
-  backgroundColor: creme,
-  selectedItemColor: terracotta,
-  unselectedItemColor: brun,
-  currentIndex: 0,
-  onTap: (index) {
-    switch (index) {
-      case 0:
-        Navigator.pushReplacementNamed(context, '/catalogue');
-        break;
-      case 1:
-        Navigator.pushNamed(context, '/publication');
-        break;
-      case 2:
-        Navigator.pushNamed(context, '/favoris');
-        break;
-      case 3:
-        Navigator.pushNamed(context, '/profil');
-        break;
-    }
-  },
-  items: const [
-    BottomNavigationBarItem(
-      icon: Icon(Icons.home_outlined),
-      label: 'Accueil',
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.add_circle_outline),
-      label: 'Ajouter',
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.favorite_border),
-      label: 'Favoris',
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.person_outline),
-      label: 'Profil',
-    ),
-  ],
-),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: creme,
+        selectedItemColor: terracotta,
+        unselectedItemColor: brun,
+        currentIndex: 0,
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.pushReplacementNamed(context, '/catalogue');
+              break;
+            case 1:
+              Navigator.pushNamed(context, '/publication');
+              break;
+            case 2:
+              Navigator.pushNamed(context, '/favoris');
+              break;
+            case 3:
+              Navigator.pushNamed(context, '/profil');
+              break;
+          }
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            label: 'Accueil',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_circle_outline),
+            label: 'Ajouter',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite_border),
+            label: 'Favoris',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            label: 'Profil',
+          ),
+        ],
+      ),
     );
   }
 
@@ -349,11 +328,7 @@ class _DetailAnnonceScreenState extends State<DetailAnnonceScreen> {
       ),
       child: Row(
         children: [
-          Icon(
-            icon,
-            size: 30,
-            color: terracotta,
-          ),
+          Icon(icon, size: 30, color: terracotta),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -370,10 +345,7 @@ class _DetailAnnonceScreenState extends State<DetailAnnonceScreen> {
                 const SizedBox(height: 5),
                 Text(
                   description,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: brun,
-                  ),
+                  style: const TextStyle(fontSize: 14, color: brun),
                 ),
               ],
             ),

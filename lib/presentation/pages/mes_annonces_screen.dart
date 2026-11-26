@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import '../models/annonce_model.dart';
-import '../services/mock_annonces.dart';
+
+import '../../data/models/annonce_model.dart';
+import '../../services/mock_annonces.dart';
+
 import 'dart:io';
 
 class MesAnnoncesScreen extends StatefulWidget {
@@ -20,8 +22,7 @@ class _MesAnnoncesScreenState extends State<MesAnnoncesScreen> {
   // Modifier une annonce
   void modifierAnnonce(AnnonceModel annonce) {
     final titreController = TextEditingController(text: annonce.titre);
-    final prixController =
-        TextEditingController(text: annonce.prix.toString());
+    final prixController = TextEditingController(text: annonce.prix.toString());
 
     showDialog(
       context: context,
@@ -37,9 +38,7 @@ class _MesAnnoncesScreenState extends State<MesAnnoncesScreen> {
             children: [
               TextField(
                 controller: titreController,
-                decoration: const InputDecoration(
-                  labelText: 'Nom du produit',
-                ),
+                decoration: const InputDecoration(labelText: 'Nom du produit'),
               ),
               const SizedBox(height: 12),
               TextField(
@@ -47,9 +46,7 @@ class _MesAnnoncesScreenState extends State<MesAnnoncesScreen> {
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
                 ),
-                decoration: const InputDecoration(
-                  labelText: 'Prix en DH',
-                ),
+                decoration: const InputDecoration(labelText: 'Prix en DH'),
               ),
             ],
           ),
@@ -119,9 +116,7 @@ class _MesAnnoncesScreenState extends State<MesAnnoncesScreen> {
         return AlertDialog(
           backgroundColor: beige,
           title: const Text('Supprimer l’annonce ?'),
-          content: const Text(
-            'Voulez-vous vraiment supprimer cette annonce ?',
-          ),
+          content: const Text('Voulez-vous vraiment supprimer cette annonce ?'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
@@ -129,17 +124,13 @@ class _MesAnnoncesScreenState extends State<MesAnnoncesScreen> {
             ),
             ElevatedButton.icon(
               onPressed: () {
-                mockAnnonces.removeWhere(
-                  (item) => item.id == annonce.id,
-                );
+                mockAnnonces.removeWhere((item) => item.id == annonce.id);
 
                 Navigator.pop(dialogContext);
                 setState(() {});
 
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Annonce supprimée !'),
-                  ),
+                  const SnackBar(content: Text('Annonce supprimée !')),
                 );
               },
               icon: const Icon(Icons.delete_outline),
@@ -182,31 +173,31 @@ class _MesAnnoncesScreenState extends State<MesAnnoncesScreen> {
                   width: 105,
                   height: 110,
                   color: beige,
-                 child: annonce.imageUrl.isEmpty
-                   ? const Icon(
-                   Icons.image_outlined,
-                    size: 40,
-                   color: terracotta,
-                  )
-                   : annonce.imageUrl.startsWith('http')
-                     ? Image.network(
-                     annonce.imageUrl,
-                      fit: BoxFit.cover,
-                       errorBuilder: (_, __, ___) => const Icon(
-                         Icons.image_outlined,
+                  child: annonce.imageUrl.isEmpty
+                      ? const Icon(
+                          Icons.image_outlined,
                           size: 40,
                           color: terracotta,
-                         ),
-                    )
+                        )
+                      : annonce.imageUrl.startsWith('http')
+                      ? Image.network(
+                          annonce.imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => const Icon(
+                            Icons.image_outlined,
+                            size: 40,
+                            color: terracotta,
+                          ),
+                        )
                       : Image.file(
-                     File(annonce.imageUrl),
-                      fit: BoxFit.cover,
-                       errorBuilder: (_, __, ___) => const Icon(
-                       Icons.image_outlined,
-                        size: 40,
-                       color: terracotta,
-                       ),
-                     ),
+                          File(annonce.imageUrl),
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => const Icon(
+                            Icons.image_outlined,
+                            size: 40,
+                            color: terracotta,
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(width: 13),
@@ -309,10 +300,7 @@ class _MesAnnoncesScreenState extends State<MesAnnoncesScreen> {
         foregroundColor: Colors.white,
         title: const Text(
           'MES ANNONCES',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 19,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
         ),
         centerTitle: true,
         leading: IconButton(
@@ -366,10 +354,7 @@ class _MesAnnoncesScreenState extends State<MesAnnoncesScreen> {
                         SizedBox(height: 12),
                         Text(
                           'Aucune annonce pour le moment',
-                          style: TextStyle(
-                            color: brun,
-                            fontSize: 16,
-                          ),
+                          style: TextStyle(color: brun, fontSize: 16),
                         ),
                       ],
                     ),
@@ -396,10 +381,7 @@ class _MesAnnoncesScreenState extends State<MesAnnoncesScreen> {
                 icon: const Icon(Icons.add_circle_outline),
                 label: const Text(
                   'Ajouter une annonce',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: terracotta,

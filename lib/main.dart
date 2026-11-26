@@ -1,18 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+
 import 'core/theme/app_theme.dart';
+import 'firebase_options.dart';
 
-import 'screens/bienvenue_screen.dart';
-import 'screens/connexion_screen.dart';
-import 'screens/inscription_screen.dart';
-import 'screens/catalogue_screen.dart';
-import 'screens/recherche_screen.dart';
-import 'screens/detail_annonce_screen.dart';
-import 'screens/publication_screen.dart';
-import 'screens/mes_annonces_screen.dart';
-import 'screens/favoris_screen.dart';
-import 'screens/profil_screen.dart';
+import 'presentation/pages/welcome_page.dart';
+import 'presentation/pages/login_page.dart';
+import 'presentation/pages/register_page.dart';
+import 'presentation/pages/forgot_password_page.dart';
+import 'presentation/pages/email_verification_page.dart';
 
-void main() {
+import 'presentation/pages/catalogue_screen.dart';
+import 'presentation/pages/detail_annonce_screen.dart';
+import 'presentation/pages/publication_screen.dart';
+import 'presentation/pages/mes_annonces_screen.dart';
+import 'presentation/pages/favoris_screen.dart';
+import 'presentation/pages/profil_screen.dart';
+import 'auth_gate.dart';
+import 'presentation/pages/recherche_screen.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   runApp(const UniMarketplaceApp());
 }
 
@@ -25,14 +36,19 @@ class UniMarketplaceApp extends StatelessWidget {
       title: 'Uni Marketplace',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      initialRoute: '/bienvenue',
+
+      home: AuthGate(),
 
       routes: {
-        '/bienvenue': (context) => const BienvenueScreen(),
-        '/connexion': (context) => const ConnexionScreen(),
-        '/inscription': (context) => const InscriptionScreen(),
-        
+        '/bienvenue': (context) => const WelcomePage(),
+        '/connexion': (context) => const LoginPage(),
+        '/inscription': (context) => const RegisterPage(),
+        '/forgot-password': (context) => const ForgotPasswordPage(),
+        '/verification-email': (context) {
+          final email = ModalRoute.of(context)?.settings.arguments as String?;
 
+          return EmailVerificationPage(email: email);
+        },
         '/catalogue': (context) => const CatalogueScreen(),
         '/recherche': (context) => const RechercheScreen(),
         '/detail': (context) => const DetailAnnonceScreen(),

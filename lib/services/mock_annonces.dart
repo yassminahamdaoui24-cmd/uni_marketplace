@@ -1,4 +1,4 @@
-import '../models/annonce_model.dart';
+import '../data/models/annonce_model.dart';
 
 final List<AnnonceModel> mockAnnonces = [
   AnnonceModel(

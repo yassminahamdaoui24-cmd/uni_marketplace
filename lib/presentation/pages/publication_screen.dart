@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import '../models/annonce_model.dart';
-import '../services/mock_annonces.dart';
+
+import '../../data/models/annonce_model.dart';
+import '../../services/mock_annonces.dart';
+
 import 'dart:io';
+
 import 'package:image_picker/image_picker.dart';
 
 class PublicationScreen extends StatefulWidget {
@@ -12,9 +15,8 @@ class PublicationScreen extends StatefulWidget {
 }
 
 class _PublicationScreenState extends State<PublicationScreen> {
-
   final ImagePicker picker = ImagePicker();
-File? imageSelectionnee;
+  File? imageSelectionnee;
 
   static const Color brun = Color(0xFF3E2922);
   static const Color terracotta = Color(0xFF824C35);
@@ -31,16 +33,14 @@ File? imageSelectionnee;
   String? categorieSelectionnee;
 
   Future<void> choisirImage() async {
-  final XFile? image = await picker.pickImage(
-    source: ImageSource.gallery,
-  );
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
-  if (image != null) {
-    setState(() {
-      imageSelectionnee = File(image.path);
-    });
+    if (image != null) {
+      setState(() {
+        imageSelectionnee = File(image.path);
+      });
+    }
   }
-}
 
   final List<String> categories = [
     'Matériel informatique',
@@ -75,9 +75,7 @@ File? imageSelectionnee;
     mockAnnonces.add(nouvelleAnnonce);
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Annonce publiée avec succès !'),
-      ),
+      const SnackBar(content: Text('Annonce publiée avec succès !')),
     );
 
     titreController.clear();
@@ -85,9 +83,9 @@ File? imageSelectionnee;
     prixController.clear();
 
     setState(() {
-  categorieSelectionnee = null;
-  imageSelectionnee = null;
-});
+      categorieSelectionnee = null;
+      imageSelectionnee = null;
+    });
   }
 
   InputDecoration decoration(String label, IconData icon) {
@@ -143,46 +141,46 @@ File? imageSelectionnee;
               const SizedBox(height: 22),
 
               GestureDetector(
-  onTap: choisirImage,
-  child: Container(
-    width: double.infinity,
-    height: 180,
-    decoration: BoxDecoration(
-      color: creme,
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: caramel),
-    ),
-    child: imageSelectionnee != null
-        ? ClipRRect(
-            borderRadius: BorderRadius.circular(15),
-            child: Image.file(
-              imageSelectionnee!,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-          )
-        : const Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.add_a_photo_outlined,
-                size: 38,
-                color: terracotta,
+                onTap: choisirImage,
+                child: Container(
+                  width: double.infinity,
+                  height: 180,
+                  decoration: BoxDecoration(
+                    color: creme,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: caramel),
+                  ),
+                  child: imageSelectionnee != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child: Image.file(
+                            imageSelectionnee!,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.add_a_photo_outlined,
+                              size: 38,
+                              color: terracotta,
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'Ajouter une photo',
+                              style: TextStyle(color: brun),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              'Choisir depuis la galerie',
+                              style: TextStyle(color: terracotta, fontSize: 12),
+                            ),
+                          ],
+                        ),
+                ),
               ),
-              SizedBox(height: 8),
-              Text(
-                'Ajouter une photo',
-                style: TextStyle(color: brun),
-              ),
-              SizedBox(height: 4),
-              Text(
-                'Choisir depuis la galerie',
-                style: TextStyle(color: terracotta, fontSize: 12),
-              ),
-            ],
-          ),
-  ),
-),
               const SizedBox(height: 20),
 
               TextFormField(
@@ -191,10 +189,9 @@ File? imageSelectionnee;
                   'Nom du produit',
                   Icons.shopping_bag_outlined,
                 ),
-                validator: (value) =>
-                    value == null || value.trim().isEmpty
-                        ? 'Entrez le nom du produit'
-                        : null,
+                validator: (value) => value == null || value.trim().isEmpty
+                    ? 'Entrez le nom du produit'
+                    : null,
               ),
               const SizedBox(height: 15),
 
@@ -205,19 +202,15 @@ File? imageSelectionnee;
                   'Description',
                   Icons.description_outlined,
                 ),
-                validator: (value) =>
-                    value == null || value.trim().isEmpty
-                        ? 'Entrez une description'
-                        : null,
+                validator: (value) => value == null || value.trim().isEmpty
+                    ? 'Entrez une description'
+                    : null,
               ),
               const SizedBox(height: 15),
 
               DropdownButtonFormField<String>(
                 value: categorieSelectionnee,
-                decoration: decoration(
-                  'Catégorie',
-                  Icons.category_outlined,
-                ),
+                decoration: decoration('Catégorie', Icons.category_outlined),
                 items: categories.map((categorie) {
                   return DropdownMenuItem(
                     value: categorie,
@@ -239,10 +232,7 @@ File? imageSelectionnee;
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
                 ),
-                decoration: decoration(
-                  'Prix en DH',
-                  Icons.payments_outlined,
-                ),
+                decoration: decoration('Prix en DH', Icons.payments_outlined),
                 validator: (value) {
                   final prix = double.tryParse(value ?? '');
                   if (prix == null || prix <= 0) {
@@ -283,10 +273,7 @@ File? imageSelectionnee;
                   icon: const Icon(Icons.add),
                   label: const Text(
                     "Publier l'annonce",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: terracotta,

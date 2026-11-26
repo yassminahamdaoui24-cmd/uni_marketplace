@@ -1,16 +1,14 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
-import '../../models/annonce_model.dart';
+
+import '../../data/models/annonce_model.dart';
 
 class AnnonceCard extends StatelessWidget {
   final AnnonceModel annonce;
   final VoidCallback? onTap;
 
-  const AnnonceCard({
-    super.key,
-    required this.annonce,
-    this.onTap,
-  });
+  const AnnonceCard({super.key, required this.annonce, this.onTap});
 
   static const Color brun = Color(0xFF3E2922);
   static const Color terracotta = Color(0xFF824C35);
@@ -25,9 +23,7 @@ class AnnonceCard extends StatelessWidget {
       color: creme,
       elevation: 2,
       clipBehavior: Clip.antiAlias,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: InkWell(
         onTap: onTap,
         child: Column(
@@ -37,33 +33,32 @@ class AnnonceCard extends StatelessWidget {
             Expanded(
               flex: 5,
               child: annonce.imageUrl.isNotEmpty
-               ? (annonce.imageUrl.startsWith('http')
-               ? Image.network(
-               annonce.imageUrl,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => const Center(
-                  child: Icon(Icons.image, size: 45),
-                 ),
-              )
-        : Image.file(
-            File(annonce.imageUrl),
-            width: double.infinity,
-            fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => const Center(
-              child: Icon(Icons.image, size: 45),
-            ),
-          ))
-    : Container(
-        width: double.infinity,
-        color: const Color(0xFFF5EBDD),
-        child: const Icon(
-          Icons.image_outlined,
-          size: 45,
-          color: Color(0xFF824C35),
-        ),
-      ),
-                  
+                  ? (annonce.imageUrl.startsWith('http')
+                        ? Image.network(
+                            annonce.imageUrl,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => const Center(
+                              child: Icon(Icons.image, size: 45),
+                            ),
+                          )
+                        : Image.file(
+                            File(annonce.imageUrl),
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => const Center(
+                              child: Icon(Icons.image, size: 45),
+                            ),
+                          ))
+                  : Container(
+                      width: double.infinity,
+                      color: const Color(0xFFF5EBDD),
+                      child: const Icon(
+                        Icons.image_outlined,
+                        size: 45,
+                        color: Color(0xFF824C35),
+                      ),
+                    ),
             ),
 
             // INFORMATIONS DU PRODUIT
@@ -93,10 +88,7 @@ class AnnonceCard extends StatelessWidget {
                       annonce.categorie,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 10,
-                        color: terracotta,
-                      ),
+                      style: const TextStyle(fontSize: 10, color: terracotta),
                     ),
 
                     const Spacer(),
